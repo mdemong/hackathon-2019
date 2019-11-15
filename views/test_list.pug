@@ -1,0 +1,15 @@
+html
+	title 'Test List'
+
+	body
+		h1 List of Cards
+	table
+		for card in list
+			tr
+				td Card # #{card.id}
+			tr
+				td
+				td Front: #{card.front}
+			tr
+				td
+				td Back: #{card.back}
