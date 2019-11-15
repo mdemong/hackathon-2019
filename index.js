@@ -16,6 +16,8 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 
 // for parsing application/json
+console.log(__dirname)
+app.use(express.static('views'));
 app.use(bodyParser.json()); 
 
 // for parsing application/xwww-
@@ -23,7 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
 
 app.get('/', function(req, res){
-	res.send("Testing... Try a different URL?");
+	res.render('test_index', {});
+	//res.send("Testing... Try a different URL?");
 });
 
 app.get('/test_list', function(req, res) {
