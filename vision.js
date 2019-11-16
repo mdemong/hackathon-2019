@@ -66,12 +66,42 @@ async function getCards(fileName) {
     const [result] = await client.documentTextDetection(fileName);
     const fullTextAnnotation = result.fullTextAnnotation;
     console.log(`Full text:\n\n ${fullTextAnnotation.text}`);
-    fullTextAnnotation.pages.forEach(page => {
-        page.blocks.forEach(block => {    
-            console.log(`Block confidence: ${block.confidence}`);
-            block.paragraphs.forEach(paragraph => {
+    const fullText = fullTextAnnotation.text;
+
+    // Getting fronts
+
+    let frontRegex = /(?<=-).*(?=:)/g;
+    let frontMatches = fullText.match(frontRegex);
+
+    let finalCardList = new Array();
+
+    for (const match of frontMatches) {
+        let frontText = match.trim().replace(/\n/, " ");
+        finalCardList.push({front: frontText + ""});
+    }
+
+
+    // Getting backs
+
+    let backRegex = /(?<=:)(.|\n)*?(?=-|$)/g
+    let backMatches = fullText.match(backRegex);
+    console.log("backmatches:" + backMatches.length);
+
+    for (let i = 0; i < finalCardList.length; i++) {
+        console.log(i);
+        let backText = backMatches[i].trim().replace(/\n/, " ");
+        finalCardList[i].back = backText;
+    }
+
+    console.log(JSON.stringify(finalCardList, undefined, 2));
+
+
+    // fullTextAnnotation.pages.forEach(page => {
+    //     page.blocks.forEach(block => {    
+    //         console.log(`Block confidence: ${block.confidence}`);
+            // block.paragraphs.forEach(paragraph => {
                 // console.log(paragraph);
-                console.log(`Paragraph confidence: ${paragraph.confidence}`);
+                // console.log(`Paragraph confidence: ${paragraph.confidence}`);
                 // paragraph.words.forEach(word => {
                 //     const wordText = word.symbols.map(s => s.text).join('');
                 //     console.log(`Word text: ${wordText}`);
@@ -114,13 +144,15 @@ async function getCards(fileName) {
                 console.log(paraText);
                 paragraphs.push(paraText);
                 */
-            });
-        });
+        //     });
+        // });
         //console.log(paragraphs);
         //console.log(lines);
-    });
+    // });
 
-    function getText(paragraph) {
 
-    }
+}
+
+function getText(paragraph) {
+
 }
