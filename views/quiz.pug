@@ -1,0 +1,38 @@
+html
+
+	- var i = index;
+	- var init_content = list_of_cards[i].front;
+	- var style_list = "width: 50%; text-align: center; padding: 150px; color: white; background-color: tomato";
+	- var max = maxIndex;
+
+	#{i}
+	br
+	br
+	div(align="center")
+		button(type="button", id="card", style=style_list, onclick="flipCard()") #{init_content}
+
+	br
+
+	unless i == 0
+		form(method = "POST", action = "/prev_card")
+			#form-body
+				input.btn.btn-primary(type="submit", value="Previous card")
+
+	unless i >= max
+		form(method = "POST", action = "/next_card")
+			#form-body
+				input.btn.btn-primary(type="submit", value="Next card")
+
+	script.
+		function flipCard() {
+			if (document.getElementById("card").style.backgroundColor === "tomato") {
+				document.getElementById("card").style.backgroundColor = "DodgerBlue";
+				var back = "#{list_of_cards[i].back}";
+				document.getElementById("card").innerHTML = back;
+			}
+			else {// if (color isn't tomato)
+				document.getElementById("card").style.backgroundColor = "tomato";
+				var front = "#{list_of_cards[i].front}";
+				document.getElementById("card").innerHTML = front;
+			}
+		}
