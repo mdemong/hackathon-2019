@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const fileUpload = require('express-fileupload');
 
 function getConnection() {
 	return mysql.createConnection({
@@ -26,6 +27,8 @@ app.set('views', './views');
 
 app.use(session({secret: "I guess we need a secret for some reason?"}));
 
+app.use(fileUpload());
+
 // for parsing application/json
 console.log(__dirname)
 app.use(express.static('views'));
@@ -36,8 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
 
 app.get('/', function(req, res){
-	res.render('test_index', {});
-	//res.send("Testing... Try a different URL?");
+	res.render("start")
 });
 
 app.get('/test_list', function(req, res) {
@@ -69,10 +71,10 @@ app.get('/sample_quiz', function(req, res) {
 	var connection = getConnection();
 	connection.connect();
 
-	connection.query('select max(id) from sample_cards', function(err, rows, fields) {
+	connection.query('select max(id) as max from sample_cards', function(err, rows, fields) {
 		if (err) { throw err; }
 		else {
-			var numCards = rows[0].id;
+			var numCards = rows[0].max;
 			req.session.maxIndex = numCards - 1;
 		}
 	})
@@ -108,6 +110,19 @@ app.post('/prev_card', function(req, res) {
 app.post('/next_card', function(req, res) {
 	req.session.index++;
 	res.render('quiz', {"list_of_cards" : req.session.list_of_cards, "index" : req.session.index, "maxIndex": req.session.maxIndex});
+});
+
+app.post('/upload', function(req, res) {
+	if (!req.files || Object.keys(req.files).length === 0) {
+    	return res.status(400).send('No files were uploaded.');
+ 	}
+
+ 	let note_file = req.files.note_file;
+
+ 	// TODO: Handle file uploading.
+	// res.render('quiz', {"list_of_cards" : deck, "index" : req.session.index, "maxIndex": req.session.maxIndex});
+
+	res.send("File accepted. You submitted: " + note_file.name);
 });
 
 app.listen(3000);
