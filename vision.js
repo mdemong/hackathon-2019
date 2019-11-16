@@ -1,4 +1,4 @@
-getCards('./biology6.jpg');
+getCards('./bionotes5.jpg');
 
 async function label() {
     // Imports the Google Cloud client library
@@ -49,12 +49,17 @@ async function text() {
 }
 
 async function getCards(fileName) {
+    
 
     // Imports the Google Cloud client library
     const vision = require('@google-cloud/vision');
+   // breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
     // Creates a client
     const client = new vision.ImageAnnotatorClient();
+
+    paragraphs = [];
+    lines = [];
 
 
     // Read a local image as a text document
@@ -62,22 +67,60 @@ async function getCards(fileName) {
     const fullTextAnnotation = result.fullTextAnnotation;
     console.log(`Full text:\n\n ${fullTextAnnotation.text}`);
     fullTextAnnotation.pages.forEach(page => {
-        page.blocks.forEach(block => {
+        page.blocks.forEach(block => {    
             console.log(`Block confidence: ${block.confidence}`);
             block.paragraphs.forEach(paragraph => {
+                // console.log(paragraph);
                 console.log(`Paragraph confidence: ${paragraph.confidence}`);
+                // paragraph.words.forEach(word => {
+                //     const wordText = word.symbols.map(s => s.text).join('');
+                //     console.log(`Word text: ${wordText}`);
+                //     console.log(`Word confidence: ${word.confidence}`);
+                //     // word.symbols.forEach(symbol => {
+                //     //     console.log(`Symbol text: ${symbol.text}`);
+                //     //     console.log(`Symbol confidence: ${symbol.confidence}`);
+                //     // });
+                // });
+
+                /*
+
+                /// Unfortunately, this section doesn't work: Paragraphs are not delimited 
+                /// by the API in a way that makes sense for note scans. We would need to
+                /// implement our own algorithm based on another factor, such as text
+                /// coordinates.
+
+                // Adapted from: https://stackoverflow.com/a/52086299
+                let paraText = ""
+
                 paragraph.words.forEach(word => {
-                    const wordText = word.symbols.map(s => s.text).join('');
-                    console.log(`Word text: ${wordText}`);
-                    console.log(`Word confidence: ${word.confidence}`);
-                    // word.symbols.forEach(symbol => {
-                    //     console.log(`Symbol text: ${symbol.text}`);
-                    //     console.log(`Symbol confidence: ${symbol.confidence}`);
-                    // });
-                });
+                    word.symbols.forEach(symbol => {
+                        paraText += symbol.text;
+                        console.log(symbol.text);
+                        //console.log(JSON.stringify(symbol, undefined, 2));
+                        if(symbol.property.detectedBreak) {
+                        if (symbol.property.detectedBreak.type === "SPACE")
+                            paraText += " ";
+                        if (symbol.property.detectedBreak.type === "EOL_SURE_SPACE") {
+                            paraText += " ";
+                        }
+                        // if (symbol.property.detectedBreak === "LINE_BREAK") {
+                        //     lines.push(lineText);
+                        //     paraText += lineText;
+                        //     lineText = "";
+                        // }
+                    }
+                    })
+                })
+                console.log(paraText);
+                paragraphs.push(paraText);
+                */
             });
         });
+        //console.log(paragraphs);
+        //console.log(lines);
     });
 
+    function getText(paragraph) {
 
+    }
 }
