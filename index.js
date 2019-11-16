@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
+const vision = require('./vision.js');
 
 function getConnection() {
 	return mysql.createConnection({
@@ -120,9 +121,19 @@ app.post('/upload', function(req, res) {
  	let note_file = req.files.note_file;
 
  	// TODO: Handle file uploading.
-	// res.render('quiz', {"list_of_cards" : deck, "index" : req.session.index, "maxIndex": req.session.maxIndex});
+	
+	note_file.mv('./temp', async function(err) {
+		if (err) return res.status(500).send(err);
 
-	res.send("File accepted. You submitted: " + note_file.name);
+		let cards = await vision.getCards('./temp');
+		req.session.list_of_cards = cards;
+		req.session.index = 0;
+		req.session.maxIndex = cards.length - 1;
+		res.render('quiz', {"list_of_cards" : cards, "index" : req.session.index, "maxIndex": req.session.maxIndex});
+		//res.send("File accepted. You submitted: " + note_file.name);
+	})
+
+
 });
 
 app.listen(3000);

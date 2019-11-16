@@ -1,4 +1,5 @@
-getCards('./bionotes5.jpg');
+
+// getCards('./bionotes5.jpg');
 
 async function label() {
     // Imports the Google Cloud client library
@@ -150,9 +151,11 @@ async function getCards(fileName) {
         //console.log(lines);
     // });
 
-
+    return finalCardList;
 }
 
 function getText(paragraph) {
 
 }
+
+module.exports = {getCards};
