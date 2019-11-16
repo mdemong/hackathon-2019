@@ -86,10 +86,8 @@ async function getCards(fileName) {
 
     let backRegex = /(?<=:)(.|\n)*?(?=-|$)/g
     let backMatches = fullText.match(backRegex);
-    console.log("backmatches:" + backMatches.length);
 
     for (let i = 0; i < finalCardList.length; i++) {
-        console.log(i);
         let backText = backMatches[i].trim().replace(/\n/, " ");
         finalCardList[i].back = backText;
     }
